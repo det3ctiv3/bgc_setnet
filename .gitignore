@@ -1,0 +1,42 @@
+# Data files (too large for git — stored separately)
+*.csv
+*.fasta
+*.faa
+*.fa
+data/esm2_embeddings.h5
+data/esm2_progress.json
+data/filtered_proteins.fasta
+
+# Model checkpoints and inference outputs
+models/
+inference/
+logs/
+*.pt
+*.npy
+*.bin
+*.onnx
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# PDFs (generated, not source)
+*.pdf
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+
+# Claude / agents
+.claude/
+.agents/
+
+# Misc
+skills-lock.json
