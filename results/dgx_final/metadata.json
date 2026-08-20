@@ -1,0 +1,13 @@
+{
+  "seeds": [
+    20260810,
+    20260811,
+    20260812,
+    20260813,
+    20260814
+  ],
+  "eligible_test_groups": 16,
+  "split_sha256": "dc26fae17e54fd2ad41a9e10353b3da3e0aacf3144b64f6ee62e8341b4360555",
+  "unit_of_inference": "family mean across five seeds",
+  "unknown_candidates": true
+}

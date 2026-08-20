@@ -1,0 +1,9 @@
+comparison,losses,mean_delta,median_delta,method,metric,n_families,n_nonzero,p_value,ties,wilcoxon_statistic,wins,holm_p_value
+ensemble_vs_pfam,2,-0.001977185314685298,0.0,ensemble,recall@50,16,4,0.625,12,3.0,2,1.0
+ensemble_vs_pfam,5,0.002498697078144318,6.038851357265812e-06,ensemble,mrr,16,11,0.2060546875,3,18.0,8,
+ensemble_vs_pfam,4,0.0023016187073055146,0.0,ensemble,map,16,11,0.7646484375,5,29.0,7,
+ensemble_vs_pfam,4,0.0016085702416894845,0.0,ensemble,ndcg@50,16,8,0.84375,8,16.0,4,
+weighted_pfam_vs_pfam,0,3.068181818181859e-05,0.0,weighted_pfam,recall@50,16,2,0.5,14,0.0,2,1.0
+weighted_pfam_vs_pfam,4,-0.00014390757637990775,0.0,weighted_pfam,mrr,16,8,0.7421875,8,15.0,4,
+weighted_pfam_vs_pfam,5,-0.00028956503707720793,0.0,weighted_pfam,map,16,8,0.640625,8,14.0,3,
+weighted_pfam_vs_pfam,3,-0.00025426204215551335,0.0,weighted_pfam,ndcg@50,16,6,0.84375,10,9.0,3,

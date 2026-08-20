@@ -1,42 +1,65 @@
-# Data files (too large for git — stored separately)
-*.csv
-*.fasta
-*.faa
-*.fa
-data/esm2_embeddings.h5
-data/esm2_progress.json
-data/filtered_proteins.fasta
+# Local holding areas created during cleanup. These are not release artifacts.
+contextbgc_move_me/
+local_assets_move_me/
 
-# Model checkpoints and inference outputs
-models/
-inference/
-logs/
-*.pt
-*.npy
-*.bin
-*.onnx
-
-# Python
+# Python/runtime state
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
 .venv/
 venv/
 *.egg-info/
 
-# PDFs (generated, not source)
-*.pdf
-
-# IDE / OS
+# Local agent/editor state
+.claude/
+.agents/
+skills-lock.json
 .vscode/
 .idea/
 .DS_Store
 *.swp
 *.swo
 
-# Claude / agents
-.claude/
-.agents/
+# Large generated data and model artifacts
+data/
+models/
+inference/
+logs/
+esm2_embeddings.h5
+data.zip
+*.h5
+*.pt
+*.pth
+*.ckpt
+*.npy
+*.npz
+*.bin
+*.onnx
+*.fasta
+*.faa
+*.fa
 
-# Misc
-skills-lock.json
+# Root atlas/training tables require provenance and license review before release.
+community_atlas.csv
+discovery_zone.csv
+training_positive_pairs.csv
+training_representatives.csv
+master_gene_annotations.csv
+
+# Generated documents/assets not needed in source control.
+*.pdf
+*.jpg
+*.jpeg
+*.png
+*.html
+!paper/fig_final_*.pdf
+
+# Only keep canonical compact artifacts for the final manuscript.
+results/*
+!results/dgx_final/
+results/dgx_final/*
+!results/dgx_final/*.csv
+!results/dgx_final/*.json
