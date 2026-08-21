@@ -24,14 +24,16 @@ Weighted Pfam exceeds unweighted Pfam by only 0.00003 Recall@50 (p = 0.50). The 
 
 This release contains:
 
-- build_final_results.py: aggregation, bootstrap intervals, and exact paired tests.
-- plot_final_results.py: deterministic regeneration of the four manuscript figures.
-- results/dgx_final/: compact canonical aggregate and per-seed family results.
-- paper/main.tex: canonical manuscript source.
-- paper/fig_final_*.pdf: figures generated from the canonical result tables.
-- CHECKPOINTS.md: expected checkpoint hashes and model-release status.
+- `bioinformatics/`: curated data-preparation pipeline notes, DeepBGC worker script, atlas-table builder, and small assembly ID manifests.
+- `deduplicate_genomes.py`, `filter_proteins.py`, `esm2_inference.py`, `prepare_training_data.py`: preprocessing utilities used around the atlas/model workflow.
+- `build_final_results.py`: aggregation, bootstrap intervals, and exact paired tests.
+- `plot_final_results.py`: deterministic regeneration of the four manuscript figures.
+- `results/dgx_final/`: compact canonical aggregate and per-seed family results.
+- `paper/main.tex`: canonical manuscript source.
+- `paper/fig_final_*.pdf`: figures generated from the canonical result tables.
+- `CHECKPOINTS.md`: expected source checkpoint hashes used to verify the public Hugging Face release.
 
-The original data-preparation scripts remain in the repository. The obsolete July model checkpoints and local large assets are intentionally excluded.
+Large raw/generated assets are intentionally excluded from Git: genome FASTA/GenBank files, antiSMASH/DeepBGC output directories, BLAST databases/results, full atlas CSVs, ESM-2 embedding HDF5 files, and local legacy checkpoints.
 
 ## Reproduce Analysis Figures
 
@@ -46,6 +48,10 @@ python plot_final_results.py
 ~~~
 
 The committed results/dgx_final/ tables are sufficient for plot_final_results.py. Rebuilding the aggregate with build_final_results.py additionally requires the retained v5/v6 per-seed evaluation exports.
+
+## Reproduce Data Preparation
+
+The curated upstream data pipeline is documented in `bioinformatics/README.md`. In short, genome assemblies are processed with DeepBGC, protein hits are compared against MIBiG with BLASTp, atlas/discovery tables are generated with `bioinformatics/scripts/build_atlas_tables.py`, and frozen ESM-2 gene embeddings are computed with `esm2_inference.py`. The large generated inputs and outputs are not stored in Git; model checkpoints and per-seed evaluation artifacts are on Hugging Face: https://huggingface.co/whiteh4t/bgc-setnet.
 
 Build the manuscript from the canonical paper directory:
 
