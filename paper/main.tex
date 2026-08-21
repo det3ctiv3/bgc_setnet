@@ -29,7 +29,7 @@
 \maketitle
 
 \begin{abstract}
-Retrieving BGCs related to those of a known producer can be regarded as a representation-learning objective. We hypothesize that ESM-2 sequence-derived representations of BGCs can improve retrieval beyond the Pfam-domain content metric. Our toolkit is the following: group-disjoint train, validation, and test assignments, validation-frozen model selection, five seeds, and family-level paired inference. Of 6,953 atlas BGCs from 182 deduplicated \textit{Streptomyces griseus} genome accessions, 5,325 silver-labeled BGCs are split into 98 training, 21 validation, and 21 test reference groups. Of the test reference groups, 16 are eligible for retrieval diagnostics. Pfam Jaccard scored Recall@50 of 0.8788, while our Pfam-augmented model, BGC-SetNet, scored 0.8472. The combination of ESM and Pfam-augmented BGC-SetNet scored 0.8769. A weighted Pfam Jaccard obtained a slightly higher score of 0.8789, which has a negligible difference compared to unweighted Pfam Jaccard. Our results do not support the claim that sequence-derived representations can recover alternative biosynthetic pathways on this benchmark. Instead, explicit Pfam remains the major signal for this objective.  Our results define the curation and pathway-level validation processes that are necessary for a more robust biological test.
+Retrieving BGCs related to those of a known producer can be regarded as a representation-learning objective. We hypothesize that ESM-2 sequence-derived representations of BGCs can improve retrieval beyond the Pfam-domain content metric. Our toolkit is the following: group-disjoint train, validation, and test assignments, validation-frozen model selection, five seeds, and family-level paired inference. Of 6,953 atlas BGCs from 182 deduplicated \textit{Streptomyces griseus} genome accessions, 5,325 silver-labeled BGCs are split into 98 training, 21 validation, and 21 test reference groups. Of the test reference groups, 16 are eligible for retrieval diagnostics. Pfam Jaccard scored Recall@50 of 0.8788, while Pfam-augmented BGC-SetNet scored 0.8472. The combination of ESM and Pfam-augmented BGC-SetNet scored 0.8769. A weighted Pfam Jaccard obtained a slightly higher score of 0.8789, which has a negligible difference compared to unweighted Pfam Jaccard. Our results do not support the claim that sequence-derived representations can recover alternative biosynthetic pathways on this benchmark. Instead, explicit Pfam remains the major signal for this objective.  Our results define the curation and pathway-level validation processes that are necessary for a more robust biological test.
 \end{abstract}
 
 \section{Introduction}
@@ -38,9 +38,9 @@ Biosynthetic gene clusters (BGCs) consist of co-localized genes encoding enzymes
 
 
 
-Current domain-content methods include strong BGC-comparison baselines. While BiG-SCAPE combines domain-content similarity, domain duplication, and adjacency information, \cite{navarro2020} antiSMASH Known-ClusterBlast uses domain information \cite{blin2021}. We use maximum Pfam Jaccard and treat it as a simple Pfam-content baseline. Protein language models (PLMs) provide sequence-derived representations. ESM-2 representations are generated from protein sequences \cite{lin2023}, but should not be treated as structural measurements.
+Current domain-content methods include strong BGC-comparison baselines. While BiG-SCAPE combines domain-content similarity, domain duplication, and adjacency information \cite{navarro2020}, antiSMASH Known-ClusterBlast uses domain information \cite{blin2021}. We use maximum Pfam Jaccard and treat it as a simple Pfam-content baseline. Protein language models (PLMs) provide sequence-derived representations. ESM-2 representations are generated from protein sequences \cite{lin2023}, but should not be treated as structural measurements.
 
-We evaluate BGC-SetNet with a fixed group-disjoint split and then test two strategies to improve the representation: feeding the model with BGC-level Pfam inventory used by the baseline and learning weights for Pfam domains.
+We evaluate Pfam-augmented BGC-SetNet with a fixed group-disjoint split and then test two strategies to improve the representation: feeding the model with BGC-level Pfam inventory used by the baseline and learning weights for Pfam domains.
 
 
 Our contributions are:
@@ -48,7 +48,7 @@ Our contributions are:
     \item a reproducible group-disjoint framework for evaluating BGC retrieval that specifies unknown candidates, reference construction, and family-level inference;
     \item a comparison of frozen ESM-2 representations, attention-based aggregation, and explicit Pfam-domain content;
     \item a differentiable weighted-Pfam Jaccard model trained only on labels from the training families; and
-    \item an empirical analysis of the benchmark, illustrating that explicit Pfam-domain content performs better than the sequence-derived representations. The ESM/\allowbreak Pfam-SetNet ensemble shows small, statistically unsupported gains in several secondary metrics.
+    \item an empirical analysis of the benchmark, illustrating that explicit Pfam-domain content performs better than the sequence-derived representations. The ESM plus Pfam-augmented BGC-SetNet ensemble shows small, statistically unsupported gains in several secondary metrics.
 \end{enumerate}
 
 \section{Related Work}
@@ -75,7 +75,7 @@ For each group, we sample 100 deterministic query draws. We remove four sampled 
 
 \subsection{Sequence-derived model}
 
-After processing genes through the ESM-2 model, we feed our sequence-derived model frozen 1,280-dimensional ESM-2 gene embeddings, normalized relative gene positions, and padding masks. Additional information, like product labels, activity labels, sequence-alignment statistics, and product-class indicators are excluded from model inputs. The final Pfam-augmented model also receives a BGC-level Pfam inventory over a 2,218-token vocabulary built only from training BGCs, including padding and unknown tokens. The raw ESM baseline is calculated by normalizing the mean of the gene embeddings.
+After processing genes through the ESM-2 model, we feed our sequence-derived model frozen 1,280-dimensional ESM-2 gene embeddings, normalized relative gene positions, and padding masks. Additional information, like product labels, activity labels, sequence-alignment statistics, and product-class indicators are excluded from model inputs. Pfam-augmented BGC-SetNet also receives a BGC-level Pfam inventory over a 2,218-token vocabulary built only from training BGCs, including padding and unknown tokens. The raw ESM baseline is calculated by normalizing the mean of the gene embeddings.
 
 
 Our model, BGC-SetNet, is a Set Transformer with two induced self-attention blocks, 32 inducing points, and eight heads, followed by multihead attention pooling. In Phase 1, we mask 15\% of gene embeddings. Let $H'_i$ denote the contextual state of a masked gene. Then, the reconstruction before pooling is performed as
@@ -84,7 +84,7 @@ Our model, BGC-SetNet, is a Set Transformer with two induced self-attention bloc
 \end{equation}
 where the decoder maps to the frozen 1,280-dimensional ESM-2 space. Phase 1 uses training BGCs only. Phase 2 optimizes a family-aware contrastive objective on training groups. Five seeds are used: 20260810--20260814.
 
-The validation-selected ensemble combines the learned Pfam-augmented SetNet cosine score and raw ESM cosine score. The selected SetNet weights were $0.1, 0.1, 0.1, 0.2,$ and $0.4$ across the five seeds; the test scores were never used to select these values.
+The validation-selected ensemble combines the learned Pfam-augmented BGC-SetNet cosine score and raw ESM cosine score. The selected BGC-SetNet + Pfam weights were $0.1, 0.1, 0.1, 0.2,$ and $0.4$ across the five seeds; the test scores were never used to select these values.
 
 \subsection{Pfam and weighted-Pfam scores}
 
@@ -108,7 +108,7 @@ For each method, seed results are averaged within each held-out family before in
 
 \subsection{Final held-out results}
 
-Table~\ref{tab:final_results} reports the canonical five-seed aggregate. Pfam Jaccard and weighted Pfam are the strongest methods on the primary Recall@50 metric and are numerically indistinguishable. The Pfam-augmented SetNet is lower than Pfam, while the ESM/\allowbreak Pfam-SetNet ensemble is close but lower.
+Table~\ref{tab:final_results} reports the canonical five-seed aggregate. Pfam Jaccard and weighted Pfam are the strongest methods on the primary Recall@50 metric and are numerically indistinguishable. Pfam-augmented BGC-SetNet is lower than Pfam, while the ESM plus Pfam-augmented BGC-SetNet ensemble is close but lower.
 
 \begin{table}[H]
 \caption{Final retrieval results under the group-disjoint split on 16 eligible held-out silver groups. Each cell shows the mean on the first line and the 95\% family-bootstrap interval below it, after averaging five seeds within each family.}
@@ -122,9 +122,9 @@ Table~\ref{tab:final_results} reports the canonical five-seed aggregate. Pfam Ja
 Method & R@50 & MRR & MAP & nDCG@50 \\
 \midrule
 Raw ESM & \shortstack{0.7946\\[-1pt]{\scriptsize[0.711,\,0.870]}} & \shortstack{0.2550\\[-1pt]{\scriptsize[0.171,\,0.348]}} & \shortstack{0.7251\\[-1pt]{\scriptsize[0.613,\,0.837]}} & \shortstack{0.8078\\[-1pt]{\scriptsize[0.724,\,0.889]}} \\
-Pfam-SetNet & \shortstack{0.8472\\[-1pt]{\scriptsize[0.776,\,0.912]}} & \shortstack{0.2786\\[-1pt]{\scriptsize[0.180,\,0.391]}} & \shortstack{0.7771\\[-1pt]{\scriptsize[0.661,\,0.884]}} & \shortstack{0.8502\\[-1pt]{\scriptsize[0.772,\,0.923]}} \\
+BGC-SetNet + Pfam & \shortstack{0.8472\\[-1pt]{\scriptsize[0.776,\,0.912]}} & \shortstack{0.2786\\[-1pt]{\scriptsize[0.180,\,0.391]}} & \shortstack{0.7771\\[-1pt]{\scriptsize[0.661,\,0.884]}} & \shortstack{0.8502\\[-1pt]{\scriptsize[0.772,\,0.923]}} \\
 Pfam Jaccard & \shortstack{0.8788\\[-1pt]{\scriptsize[0.815,\,0.938]}} & \shortstack{0.3071\\[-1pt]{\scriptsize[0.195,\,0.432]}} & \shortstack{0.8480\\[-1pt]{\scriptsize[0.752,\,0.934]}} & \shortstack{0.9042\\[-1pt]{\scriptsize[0.846,\,0.958]}} \\
-ESM + Pfam-SetNet & \shortstack{0.8769\\[-1pt]{\scriptsize[0.813,\,0.936]}} & \shortstack{0.3096\\[-1pt]{\scriptsize[0.197,\,0.435]}} & \shortstack{0.8503\\[-1pt]{\scriptsize[0.756,\,0.934]}} & \shortstack{0.9058\\[-1pt]{\scriptsize[0.849,\,0.957]}} \\
+\shortstack{ESM + BGC-SetNet\\+ Pfam} & \shortstack{0.8769\\[-1pt]{\scriptsize[0.813,\,0.936]}} & \shortstack{0.3096\\[-1pt]{\scriptsize[0.197,\,0.435]}} & \shortstack{0.8503\\[-1pt]{\scriptsize[0.756,\,0.934]}} & \shortstack{0.9058\\[-1pt]{\scriptsize[0.849,\,0.957]}} \\
 Weighted Pfam & \shortstack{0.8789\\[-1pt]{\scriptsize[0.814,\,0.939]}} & \shortstack{0.3069\\[-1pt]{\scriptsize[0.195,\,0.436]}} & \shortstack{0.8477\\[-1pt]{\scriptsize[0.749,\,0.933]}} & \shortstack{0.9040\\[-1pt]{\scriptsize[0.846,\,0.958]}} \\
 \bottomrule
 \end{tabular}
@@ -146,7 +146,7 @@ Weighted Pfam & \shortstack{0.8789\\[-1pt]{\scriptsize[0.814,\,0.939]}} & \short
 
 \subsection{Family-level comparisons}
 
-The ESM/\allowbreak Pfam-SetNet ensemble has a Recall@50 difference of $-0.00198$ relative to Pfam Jaccard (exact $p=0.625$; 2 wins, 12 ties, 2 losses). Weighted Pfam Jaccard has a difference of $+0.00003$ (exact $p=0.50$; 2 wins, 14 ties, 0 losses). These are not meaningful improvements.
+The ESM plus Pfam-augmented BGC-SetNet ensemble has a Recall@50 difference of $-0.00198$ relative to Pfam Jaccard (exact $p=0.625$; 2 wins, 12 ties, 2 losses). Weighted Pfam Jaccard has a difference of $+0.00003$ (exact $p=0.50$; 2 wins, 14 ties, 0 losses). These are not meaningful improvements.
 
 \begin{table}[H]
 \caption{Exact paired family-level comparisons over 16 eligible test groups. Each observation is a five-seed family mean.}
@@ -169,7 +169,7 @@ Weighted Pfam vs. Pfam & Recall@50 & +0.00003 & 2/14/0 & 0.500 & 1.000 \\
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.9\textwidth]{fig_final_family_scatter.pdf}
-\caption{Per-family Recall@50 compared with Pfam Jaccard. The diagonal denotes parity. The learned ESM/\allowbreak Pfam-SetNet ensemble does not systematically exceed Pfam, and weighted Pfam is almost identical to the unweighted score.}
+\caption{Per-family Recall@50 compared with Pfam Jaccard. The diagonal denotes parity. The learned ESM plus Pfam-augmented BGC-SetNet ensemble does not systematically exceed Pfam, and weighted Pfam is almost identical to the unweighted score.}
 \label{fig:final_scatter}
 \end{figure}
 
@@ -194,10 +194,10 @@ This result clarifies what a stronger alternative-pathway study would require: c
 
 \section{Conclusion}
 
-We present a reproducible five-seed evaluation framework for sequence-derived BGC retrieval. On 6,953 atlas BGCs and 16 eligible held-out silver groups, Pfam-based methods remain the strongest practical baselines. Neither the Pfam-augmented BGC-SetNet nor its validation-selected ESM/\allowbreak Pfam-SetNet ensemble provides a supported improvement, and a differentiable weighted-Pfam generalization is effectively identical to standard Pfam Jaccard. The correct biological interpretation is gene-content diversity relative to references, not proof of alternative biosynthetic pathways. The protocol and aggregate result artifacts provide a useful baseline for future work with curated labels and pathway-level evidence.
+We present a reproducible five-seed evaluation framework for sequence-derived BGC retrieval. On 6,953 atlas BGCs and 16 eligible held-out silver groups, Pfam-based methods remain the strongest practical baselines. Neither the Pfam-augmented BGC-SetNet nor its validation-selected ESM plus Pfam-augmented BGC-SetNet ensemble provides a supported improvement, and a differentiable weighted-Pfam generalization is effectively identical to standard Pfam Jaccard. The correct biological interpretation is gene-content diversity relative to references, not proof of alternative biosynthetic pathways. The protocol and aggregate result artifacts provide a useful baseline for future work with curated labels and pathway-level evidence.
 
 \section*{Code and Data Availability}
-Manuscript source, the curated bioinformatics data-preparation pipeline, aggregate-analysis and figure-generation code, and compact family-level result artifacts are available at \url{https://github.com/det3ctiv3/bgc_setnet}. Final five-seed Pfam-augmented SetNet and weighted-Pfam checkpoints, per-seed configs, Pfam vocabularies, evaluation metadata, and a model card are available at \url{https://huggingface.co/whiteh4t/bgc-setnet}. Large raw genome files, generated atlas tables, and the frozen ESM-2 embedding matrix are not bundled in either source repository.
+Manuscript source, the curated bioinformatics data-preparation pipeline, aggregate-analysis and figure-generation code, and compact family-level result artifacts are available at \url{https://github.com/det3ctiv3/bgc_setnet}. Final five-seed Pfam-augmented BGC-SetNet and weighted-Pfam checkpoints, per-seed configs, Pfam vocabularies, evaluation metadata, and a model card are available at \url{https://huggingface.co/whiteh4t/bgc-setnet}. Large raw genome files, generated atlas tables, and the frozen ESM-2 embedding matrix are not bundled in either source repository.
 
 \bibliographystyle{plain}
 \begin{thebibliography}{20}
@@ -236,6 +236,6 @@ The final aggregate artifacts record split hash:
 \small\texttt{dc26fae17e54fd2ad41a9e10353b3da3}\\
 \texttt{e0aacf3144b64f6ee62e8341b4360555}
 \end{center}
-ESM/\allowbreak Pfam-SetNet runs use the two-phase configuration described above with five seeds. Weighted-Pfam runs use the same group split, a training-only 2,218-token Pfam vocabulary including padding and unknown tokens, direct differentiable weighted-Jaccard training, validation checkpoint selection, and direct test scoring.
+ESM plus Pfam-augmented BGC-SetNet runs use the two-phase configuration described above with five seeds. Weighted-Pfam runs use the same group split, a training-only 2,218-token Pfam vocabulary including padding and unknown tokens, direct differentiable weighted-Jaccard training, validation checkpoint selection, and direct test scoring.
 
 \end{document}

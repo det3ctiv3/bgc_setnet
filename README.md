@@ -13,12 +13,12 @@ The effective inference unit is the held-out family (n = 16). Values below are f
 | Method | Recall@50 | MRR | MAP | nDCG@50 |
 | --- | ---: | ---: | ---: | ---: |
 | Raw ESM mean | 0.7946 | 0.2550 | 0.7251 | 0.8078 |
-| Pfam-augmented BGC-SetNet | 0.8472 | 0.2786 | 0.7771 | 0.8502 |
+| BGC-SetNet + Pfam | 0.8472 | 0.2786 | 0.7771 | 0.8502 |
 | Pfam Jaccard | 0.8788 | 0.3071 | 0.8480 | 0.9042 |
-| ESM/Pfam-SetNet ensemble | 0.8769 | 0.3096 | 0.8503 | 0.9058 |
+| ESM + BGC-SetNet + Pfam | 0.8769 | 0.3096 | 0.8503 | 0.9058 |
 | Weighted Pfam Jaccard | 0.8789 | 0.3069 | 0.8477 | 0.9040 |
 
-Weighted Pfam exceeds unweighted Pfam by only 0.00003 Recall@50 (p = 0.50). The ESM/Pfam-SetNet ensemble is lower by 0.00198 (p = 0.625). Neither difference supports an improvement claim.
+Weighted Pfam exceeds unweighted Pfam by only 0.00003 Recall@50 (p = 0.50). The ESM plus Pfam-augmented BGC-SetNet ensemble is lower by 0.00198 (p = 0.625). Neither difference supports an improvement claim.
 
 ## Release Scope
 
@@ -62,7 +62,7 @@ tectonic main.tex
 
 ## Reproducibility Boundary
 
-The exact v5 Pfam-augmented SetNet checkpoints, v6 weighted-Pfam checkpoints, training-only Pfam vocabularies, per-seed evaluation artifacts, source snapshot, and model card are publicly released on Hugging Face: https://huggingface.co/whiteh4t/bgc-setnet. The available July checkpoints in local ignored folders use excluded alignment and BGC-level features and are not paper-model substitutes.
+The exact v5 Pfam-augmented BGC-SetNet checkpoints, v6 weighted-Pfam checkpoints, training-only Pfam vocabularies, per-seed evaluation artifacts, source snapshot, and model card are publicly released on Hugging Face: https://huggingface.co/whiteh4t/bgc-setnet. The available July checkpoints in local ignored folders use excluded alignment and BGC-level features and are not paper-model substitutes.
 
 Treat this GitHub repository as the final analysis and manuscript release. The executable model artifact release is hosted separately on Hugging Face, and CHECKPOINTS.md records the source checkpoint hashes used to verify that release.
 

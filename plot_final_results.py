@@ -12,9 +12,9 @@ import pandas as pd
 
 LABELS = {
     "raw_esm_mean": "Raw ESM mean",
-    "setnet": "Pfam-augmented SetNet",
+    "setnet": "BGC-SetNet + Pfam",
     "pfam": "Pfam Jaccard",
-    "ensemble": "ESM/Pfam-SetNet ensemble",
+    "ensemble": "ESM + BGC-SetNet\n+ Pfam",
     "weighted_pfam": "Weighted Pfam Jaccard",
 }
 METRIC_LABELS = {

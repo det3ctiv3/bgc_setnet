@@ -4,7 +4,7 @@ Public model repository: https://huggingface.co/whiteh4t/bgc-setnet
 
 This release contains the verified final-paper model artifacts recovered from the original journal rebuild run archive:
 
-- Five Pfam-augmented SetNet `model.safetensors` checkpoints for seeds 20260810-20260814.
+- Five Pfam-augmented BGC-SetNet `model.safetensors` checkpoints for seeds 20260810-20260814.
 - Five weighted-Pfam Jaccard `model.safetensors` checkpoints for seeds 20260810-20260814.
 - Per-seed configs, Pfam vocabularies, training histories, and evaluation metadata.
 - Aggregate manuscript result tables under `results/dgx_final/`.
