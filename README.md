@@ -56,9 +56,9 @@ tectonic main.tex
 
 ## Reproducibility Boundary
 
-The exact v5 Pfam-augmented SetNet checkpoints, v6 weighted-Pfam checkpoints, weighted-Pfam training implementation, training-only Pfam vocabulary, and frozen split manifest are not present on this workstation. They must be recovered from the original DGX run archive before a paper-model release can be made on Hugging Face. The available July checkpoints use excluded alignment and BGC-level features and are not substitutes.
+The exact v5 Pfam-augmented SetNet checkpoints, v6 weighted-Pfam checkpoints, training-only Pfam vocabularies, per-seed evaluation artifacts, source snapshot, and model card are publicly released on Hugging Face: https://huggingface.co/whiteh4t/bgc-setnet. The available July checkpoints in local ignored folders use excluded alignment and BGC-level features and are not paper-model substitutes.
 
-Until those files are recovered and hash-verified, treat this repository as the final analysis and manuscript release, not as a complete executable training package. See CHECKPOINTS.md for the required SHA-256 values.
+Treat this GitHub repository as the final analysis and manuscript release. The executable model artifact release is hosted separately on Hugging Face, and CHECKPOINTS.md records the source checkpoint hashes used to verify that release.
 
 ## Scientific Limits
 
